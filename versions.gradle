@@ -1,0 +1,14 @@
+allprojects {
+    ext['junitVersion'] = '4.12'
+    ext['mockitoCoreVersion'] = '1.+'
+    ext['springVersion'] = '5.0.4.RELEASE'
+    ext['aspectjVersion'] = '1.6.11'
+    ext['cglibVersion'] = '2.2.2'
+    ext['commonsLoggingVersion'] = '1.1.1'
+    ext['log4jVersion'] = '1.2.14'
+    ext['mockitoVersion'] = '1.8.4'
+    ext['objenesisVersion'] = '1.0'
+    ext['h2Version'] = '1.4.196'
+    ext['flywayVersion'] = '5.0.7'
+    ext['jsscVersion'] = '2.8.0'
+}

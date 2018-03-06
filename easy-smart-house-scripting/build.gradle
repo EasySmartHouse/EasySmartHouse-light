@@ -1,0 +1,8 @@
+apply plugin: 'maven'
+
+dependencies {
+	compile project(":easy-smart-house-device")
+	compile project(":easy-smart-house-network")
+	
+	testCompile "org.scream3r:jssc:$jsscVersion"
+}

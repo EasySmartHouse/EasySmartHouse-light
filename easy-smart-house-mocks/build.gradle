@@ -1,0 +1,8 @@
+apply plugin: 'maven'
+
+dependencies {
+    compile project(":easy-smart-house-device")
+    compile project(":easy-smart-house-network")
+
+    compile "log4j:log4j:$log4jVersion"
+}

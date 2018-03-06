@@ -1,0 +1,86 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+jar {
+    baseName = 'easy-smart-house-services'
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    compile name: 'OneWireAPI'
+
+    compile project(":easy-smart-house-device")
+    compile project(":easy-smart-house-network")
+    compile project(":easy-smart-house-mocks")
+    compile project(":easy-smart-house-scripting")
+    compile project(":easy-smart-house-cameras")
+    compile project(":easy-smart-house-el")
+    compile project(":easy-smart-house-maxim")
+
+    compile "org.springframework:spring-core:$springVersion"
+    compile "org.springframework:spring-context:$springVersion"
+    compile "org.springframework:spring-beans:$springVersion"
+    compile "org.springframework:spring-aop:$springVersion"
+    compile "org.springframework:spring-context-support:$springVersion"
+    compile "org.springframework:spring-jdbc:$springVersion"
+    compile "org.springframework:spring-tx:$springVersion"
+
+    compile "org.aspectj:aspectjrt:$aspectjVersion"
+    compile "org.aspectj:aspectjweaver:$aspectjVersion"
+
+    compile "cglib:cglib:$cglibVersion"
+    compile "commons-logging:commons-logging:$commonsLoggingVersion"
+    compile "log4j:log4j:$log4jVersion"
+    compile "org.mockito:mockito-core:$mockitoVersion"
+    compile "org.objenesis:objenesis:$objenesisVersion"
+
+    compile "com.h2database:h2:$h2Version"
+    compile "org.flywaydb:flyway-core:$flywayVersion"
+}
+
+task cleanDist(type: Delete) {
+    def dirName = "$projectDir/dist"
+    file(dirName).list().each {
+        file -> delete "${dirName}/${file}"
+    }
+}
+
+task copyLibs(type: Copy) {
+    from configurations.runtime
+    into "$projectDir/dist/libs"
+}
+
+task copyConfigs(type: Copy) {
+    from 'src/main/resources/config'
+    into "$projectDir/dist/config"
+}
+
+task copySql(type: Copy) {
+    from 'src/main/resources/sql'
+    into "$projectDir/dist/sql"
+}
+
+jar.doFirst {
+    manifest {
+        attributes("Implementation-Title": project.name,
+                "Implementation-Version": version,
+                "Main-Class": "net.easysmarthouse.service.Starter",
+                "Class-Path": configurations.compile.collect { 'libs/' + it.getName() }.join(' '))
+    }
+}
+
+jar {
+    destinationDir = file("$projectDir/dist")
+    archiveName "${baseName}.${extension}"
+}
+
+clean.dependsOn(cleanDist)
+
+assemble.dependsOn(clean, copyLibs, copyConfigs, copySql)

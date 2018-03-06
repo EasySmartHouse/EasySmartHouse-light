@@ -1,0 +1,71 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+
+apply from: 'versions.gradle'
+
+version '1.0'
+
+description = 'Easy SmartHouse'
+
+
+allprojects {
+    group 'net.easysmarthouse'
+    version '1.0'
+
+    apply plugin: 'idea'
+    apply plugin: 'java'
+
+    compileJava.options.encoding = 'UTF-8'
+    compileTestJava.options.encoding = 'UTF-8'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testCompile 'junit:junit'
+    }
+
+    compileJava {
+        options.encoding = "UTF-8"
+    }
+
+    compileTestJava {
+        options.encoding = "UTF-8"
+    }
+
+    test {
+        exclude '**/*IntegrationTest*'
+
+        testLogging {
+            events 'passed', 'skipped', 'failed'
+            exceptionFormat = 'full'
+        }
+    }
+}
+
+
+subprojects {
+    apply plugin: 'java'
+    tasks.withType(JavaCompile) { options.encoding = "UTF-8" }
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+
+    dependencies {
+        testCompile "junit:junit:$junitVersion"
+        testCompile "org.mockito:mockito-core:$mockitoCoreVersion"
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}

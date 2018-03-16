@@ -18,6 +18,7 @@ dependencies {
 
     compile project(":easy-smart-house-device")
     compile project(":easy-smart-house-network")
+    compile project(":easy-smart-house-shared")
     compile project(":easy-smart-house-mocks")
     compile project(":easy-smart-house-scripting")
     compile project(":easy-smart-house-cameras")
@@ -67,6 +68,11 @@ task copySql(type: Copy) {
     into "$projectDir/dist/sql"
 }
 
+task copyImages(type: Copy) {
+    from 'src/main/resources/images'
+    into "$projectDir/dist/images"
+}
+
 jar.doFirst {
     manifest {
         attributes("Implementation-Title": project.name,
@@ -79,8 +85,10 @@ jar.doFirst {
 jar {
     destinationDir = file("$projectDir/dist")
     archiveName "${baseName}.${extension}"
+
+    exclude ("images/**")
 }
 
 clean.dependsOn(cleanDist)
 
-assemble.dependsOn(clean, copyLibs, copyConfigs, copySql)
+assemble.dependsOn(clean, copyLibs, copyConfigs, copySql, copyImages)

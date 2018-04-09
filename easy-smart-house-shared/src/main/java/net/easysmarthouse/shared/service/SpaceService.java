@@ -6,6 +6,12 @@ import java.util.Collection;
 
 public interface SpaceService {
 
+    public int update(Space space);
+
+    public int save(Space space);
+
+    public Space getWithDevices(int spaceId);
+
     public Collection<Space> getSpaces();
 
 }

@@ -19,7 +19,7 @@ class HumidityMockSensorPrototype extends MockSensor {
     }
 
     @Override
-    public double getValue() throws DeviceException {
-        return 0;
+    public Double getValue() throws DeviceException {
+        return Double.valueOf("0");
     }
 }

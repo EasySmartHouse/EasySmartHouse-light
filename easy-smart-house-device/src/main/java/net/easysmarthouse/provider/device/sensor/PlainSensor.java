@@ -15,7 +15,7 @@ public class PlainSensor extends AbstractSensor {
     private double value;
 
     @Override
-    public double getValue() {
+    public Double getValue() {
         return value;
     }
 

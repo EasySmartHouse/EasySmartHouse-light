@@ -29,7 +29,7 @@ public class ScriptableSensor implements Sensor, ScriptableDevice, Closeable {
     }
 
     @Override
-    public synchronized double getValue() throws DeviceException {
+    public synchronized Double getValue() throws DeviceException {
         return (Double) prototype.invoke("getValue");
     }
 

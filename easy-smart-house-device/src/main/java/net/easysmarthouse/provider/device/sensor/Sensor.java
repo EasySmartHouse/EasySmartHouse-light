@@ -17,7 +17,7 @@ public interface Sensor extends Device{
     /**
      * Return sensor value.
      */
-    public double getValue() throws DeviceException;
+    public Double getValue() throws DeviceException;
 
     /**
      * Return sensor type. See {@link SensorType} for available types.

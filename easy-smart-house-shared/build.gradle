@@ -1,6 +1,9 @@
 apply plugin: 'maven'
 
 dependencies {
+    compile "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
+    compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+
     compile project(":easy-smart-house-device")
     compile project(":easy-smart-house-network")
 }

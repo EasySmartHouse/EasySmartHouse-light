@@ -6,7 +6,6 @@
 package net.easysmarthouse.provider.device;
 
 /**
- *
  * @author rusakovich
  */
 public enum DeviceType {
@@ -16,4 +15,9 @@ public enum DeviceType {
     Branch,
     Key,
     Unknown;
+
+    @Override
+    public String toString() {
+        return String.valueOf(this.ordinal());
+    }
 }

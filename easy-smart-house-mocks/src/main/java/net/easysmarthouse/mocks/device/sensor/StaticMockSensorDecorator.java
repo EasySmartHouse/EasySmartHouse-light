@@ -19,7 +19,7 @@ public class StaticMockSensorDecorator extends MockSensorDecorator {
     }
 
     @Override
-    public double getValue() throws DeviceException {
+    public Double getValue() throws DeviceException {
         return value;
     }
 

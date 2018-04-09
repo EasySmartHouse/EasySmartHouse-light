@@ -1,11 +1,3 @@
--- SENSORS
-INSERT INTO SENSORS VALUES (NULL, 'EC000801AC673410', 'tempSensor1', 'Temperature sensor outside', 'TemperatureSensor');
---
-
--- ACTUATORS
-INSERT INTO ACTUATORS VALUES (NULL, '6900000002402B05', 'tableLampSwitch', 'Настольная лампа', 'switchActuator');
---
-
 -- IMAGES
 INSERT INTO IMAGES(ID, FILE_NAME, FILE_CONTENT) VALUES(1, '001-safebox.png', FILE_READ('images/001-safebox.png'));
 INSERT INTO IMAGES(ID, FILE_NAME, FILE_CONTENT) VALUES(2, '002-thermostat.png', FILE_READ('images/002-thermostat.png'));
@@ -21,7 +13,15 @@ INSERT INTO IMAGES(ID, FILE_NAME, FILE_CONTENT) VALUES(11, '011-air-conditioner.
 --
 
 -- SPACES
-INSERT INTO SPACES(ID, NAME, IMAGE) VALUES(NULL, 'Guest room', 3);
-INSERT INTO SPACES(ID, NAME, IMAGE) VALUES(NULL, 'Kitchen', 7);
-INSERT INTO SPACES(ID, NAME, IMAGE) VALUES(NULL, 'Meeting room', 9);
+INSERT INTO SPACES(ID, NAME, IMAGE) VALUES(1, 'Guest room', 3);
+INSERT INTO SPACES(ID, NAME, IMAGE) VALUES(2, 'Kitchen', 7);
+INSERT INTO SPACES(ID, NAME, IMAGE) VALUES(3, 'Meeting room', 9);
+--
+
+-- SENSORS
+INSERT INTO SENSORS VALUES (1, 'EC000801AC673410', 'tempSensor1', 'Temperature sensor outside', 'true', 'TemperatureSensor', 1);
+--
+
+-- ACTUATORS
+INSERT INTO ACTUATORS VALUES (2, '6900000002402B05', 'tableLampSwitch', 'Настольная лампа', 'true', 'switchActuator', 2);
 --

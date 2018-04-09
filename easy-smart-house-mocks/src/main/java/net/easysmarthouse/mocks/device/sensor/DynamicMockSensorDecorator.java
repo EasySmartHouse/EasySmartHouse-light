@@ -6,7 +6,6 @@ package net.easysmarthouse.mocks.device.sensor;
 
 import net.easysmarthouse.mocks.device.util.ValueHelper;
 import net.easysmarthouse.provider.device.exception.DeviceException;
-import java.util.Random;
 
 /**
  *
@@ -51,7 +50,7 @@ public class DynamicMockSensorDecorator extends MockSensorDecorator {
     }
 
     @Override
-    public double getValue() throws DeviceException {
+    public Double getValue() throws DeviceException {
         return value;
     }
 

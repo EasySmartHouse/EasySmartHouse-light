@@ -33,7 +33,7 @@ public class TemperatureContainerAdapter extends OneWireContainerAdapter impleme
     }
 
     @Override
-    public double getValue() throws DeviceException {
+    public Double getValue() throws DeviceException {
         try {
             byte[] state = temperatureContainer.readDevice();
             // If conversion enabled initiate it, otherwise skip it and just read value from device.

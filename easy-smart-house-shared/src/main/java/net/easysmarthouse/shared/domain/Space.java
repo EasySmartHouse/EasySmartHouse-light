@@ -1,13 +1,25 @@
 package net.easysmarthouse.shared.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import net.easysmarthouse.provider.device.Device;
+import net.easysmarthouse.shared.domain.device.DeviceEntity;
+import net.easysmarthouse.shared.json.view.Views;
+
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 
-public class Space implements Serializable{
+public class Space implements Serializable {
 
     private long id;
     private String name;
+
+    @JsonView(Views.WithImage.class)
     private String image;
+
+    @JsonView(Views.WithDevices.class)
+    private Collection<DeviceEntity> devices = Collections.EMPTY_LIST;
 
     public long getId() {
         return id;
@@ -31,6 +43,14 @@ public class Space implements Serializable{
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Collection<DeviceEntity> getDevices() {
+        return devices;
+    }
+
+    public void setDevices(Collection<DeviceEntity> devices) {
+        this.devices = devices;
     }
 
     @Override

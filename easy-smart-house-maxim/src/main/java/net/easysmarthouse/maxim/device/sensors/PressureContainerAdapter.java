@@ -54,7 +54,7 @@ public class PressureContainerAdapter extends OneWireContainerAdapter implements
      * <pre> pressure = ADresult * coeff + diff</pre>
      */
     @Override
-    public double getValue() throws DeviceException {
+    public Double getValue() throws DeviceException {
         try {
             byte[] state = container.readDevice();
             // Check if specific channel is enabled

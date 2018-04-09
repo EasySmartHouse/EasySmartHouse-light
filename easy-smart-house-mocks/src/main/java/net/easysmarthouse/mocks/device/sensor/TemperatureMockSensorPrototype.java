@@ -8,7 +8,6 @@ import net.easysmarthouse.provider.device.exception.DeviceException;
 import net.easysmarthouse.provider.device.sensor.SensorType;
 
 /**
- *
  * @author mirash
  */
 class TemperatureMockSensorPrototype extends MockSensor {
@@ -19,7 +18,7 @@ class TemperatureMockSensorPrototype extends MockSensor {
     }
 
     @Override
-    public double getValue() throws DeviceException {
-        return 0;
+    public Double getValue() throws DeviceException {
+        return Double.valueOf("0");
     }
 }

@@ -1,5 +1,6 @@
 package net.easysmarthouse.config;
 
+import net.easysmarthouse.shared.service.DeviceService;
 import net.easysmarthouse.shared.service.ImageService;
 import net.easysmarthouse.shared.service.SpaceService;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +37,14 @@ public class ServiceConfig {
         RmiProxyFactoryBean proxyBean = new RmiProxyFactoryBean();
         proxyBean.setServiceUrl("rmi://" + serviceHost + ":" + servicePort + "/image-service");
         proxyBean.setServiceInterface(ImageService.class);
+        return proxyBean;
+    }
+
+    @Bean
+    public RmiProxyFactoryBean createDeviceService() {
+        RmiProxyFactoryBean proxyBean = new RmiProxyFactoryBean();
+        proxyBean.setServiceUrl("rmi://" + serviceHost + ":" + servicePort + "/device-service");
+        proxyBean.setServiceInterface(DeviceService.class);
         return proxyBean;
     }
 

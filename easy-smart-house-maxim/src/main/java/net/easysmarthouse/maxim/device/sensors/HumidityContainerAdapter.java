@@ -32,7 +32,7 @@ public class HumidityContainerAdapter extends OneWireContainerAdapter implements
     }
 
     @Override
-    public double getValue() throws DeviceException {
+    public Double getValue() throws DeviceException {
         try {
             // Read device state.
             byte[] state = humidityContainer.readDevice();

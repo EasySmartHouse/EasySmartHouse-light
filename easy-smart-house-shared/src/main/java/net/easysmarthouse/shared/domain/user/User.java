@@ -20,6 +20,7 @@ public class User implements UserDetails {
     private String firstname;
     private String lastname;
     private String role = Role.USER.name();
+    private boolean enabled = true;
 
     public User() {
     }
@@ -77,7 +78,11 @@ public class User implements UserDetails {
     @JsonIgnore
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public Long getId() {

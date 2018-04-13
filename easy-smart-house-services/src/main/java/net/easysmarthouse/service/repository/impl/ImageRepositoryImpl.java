@@ -29,7 +29,8 @@ public class ImageRepositoryImpl implements ImageRepository {
 
     @Override
     public Image findByFileName(String fileName) {
-        return jdbcTemplate.queryForObject("SELECT * FROM IMAGES WHERE FILE_NAME=?", new Object[]{fileName},
+        return jdbcTemplate.queryForObject("SELECT * FROM IMAGES " +
+                        "WHERE FILE_NAME=?", new Object[]{fileName},
                 new ImageRowMapper());
     }
 }

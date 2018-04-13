@@ -41,13 +41,16 @@ public class SpaceRepositoryImpl implements SpaceRepository {
 
     @Override
     public List<Space> findAll() {
-        return jdbcTemplate.query("SELECT sp.ID, sp.NAME, img.FILE_NAME FROM SPACES sp LEFT OUTER JOIN IMAGES img ON sp.IMAGE = img.ID",
+        return jdbcTemplate.query("SELECT sp.ID, sp.NAME, img.FILE_NAME FROM SPACES sp " +
+                        "LEFT OUTER JOIN IMAGES img ON sp.IMAGE = img.ID",
                 new SpaceRowMapper());
     }
 
     @Override
     public Space getWithDevices(Integer spaceId) {
-        final Space space = jdbcTemplate.queryForObject("SELECT sp.ID, sp.NAME, img.FILE_NAME FROM SPACES sp LEFT OUTER JOIN IMAGES img ON sp.IMAGE = img.ID WHERE sp.ID=?",
+        final Space space = jdbcTemplate.queryForObject("SELECT sp.ID, sp.NAME, img.FILE_NAME FROM SPACES sp " +
+                        "LEFT OUTER JOIN IMAGES img ON sp.IMAGE = img.ID " +
+                        "WHERE sp.ID=?",
                 new Object[]{spaceId},
                 new SpaceRowMapper());
 

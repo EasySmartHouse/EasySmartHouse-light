@@ -70,7 +70,8 @@ public class ActuatorsRepositoryImpl implements ActuatorsRepository {
     public ActuatorEntity findByAddress(String address) {
         return jdbcTemplate.queryForObject("SELECT act.ID, act.ADDRESS, act.LABEL, act.DESCRIPTION, act.ENABLED, act.ACTUATOR_TYPE, act.SPACE_ID, " +
                         "adj.MIN_VALUE, adj.MAX_VALUE, adj.CHANGE_STEP, adj.DEFAULT_VALUE  " +
-                        "FROM ACTUATORS act LEFT OUTER JOIN ADJUSTABLE_ACTUATORS adj ON act.ID = adj.ACTUATOR WHERE act.ADDRESS=?", new Object[]{address},
+                        "FROM ACTUATORS act LEFT OUTER JOIN ADJUSTABLE_ACTUATORS adj ON act.ID = adj.ACTUATOR " +
+                        "WHERE act.ADDRESS=?", new Object[]{address},
                 new ActuatorRowMapper());
     }
 
@@ -78,7 +79,8 @@ public class ActuatorsRepositoryImpl implements ActuatorsRepository {
     public List<ActuatorEntity> getBySpaceId(Integer spaceId) {
         return jdbcTemplate.query("SELECT act.ID, act.ADDRESS, act.LABEL, act.DESCRIPTION, act.ENABLED, act.ACTUATOR_TYPE, act.SPACE_ID, " +
                         "adj.MIN_VALUE, adj.MAX_VALUE, adj.CHANGE_STEP, adj.DEFAULT_VALUE  " +
-                        "FROM ACTUATORS act LEFT OUTER JOIN ADJUSTABLE_ACTUATORS adj ON act.ID = adj.ACTUATOR WHERE act.SPACE_ID=?",
+                        "FROM ACTUATORS act LEFT OUTER JOIN ADJUSTABLE_ACTUATORS adj ON act.ID = adj.ACTUATOR " +
+                        "WHERE act.SPACE_ID=?",
                 new Object[]{spaceId},
                 new ActuatorRowMapper()
         );
@@ -88,7 +90,8 @@ public class ActuatorsRepositoryImpl implements ActuatorsRepository {
     public List<ActuatorEntity> search(String term) {
         return jdbcTemplate.query("SELECT act.ID, act.ADDRESS, act.LABEL, act.DESCRIPTION, act.ENABLED, act.ACTUATOR_TYPE, act.SPACE_ID, " +
                         "adj.MIN_VALUE, adj.MAX_VALUE, adj.CHANGE_STEP, adj.DEFAULT_VALUE  " +
-                        "FROM FT_SEARCH_DATA(?, 0, 0) FT, ACTUATORS act LEFT OUTER JOIN ADJUSTABLE_ACTUATORS adj ON act.ID = adj.ACTUATOR WHERE FT.TABLE='ACTUATORS' AND act.ID = FT.KEYS[0]",
+                        "FROM FT_SEARCH_DATA(?, 0, 0) FT, ACTUATORS act LEFT OUTER JOIN ADJUSTABLE_ACTUATORS adj ON act.ID = adj.ACTUATOR " +
+                        "WHERE FT.TABLE='ACTUATORS' AND act.ID = FT.KEYS[0]",
                 new Object[]{term},
                 new ActuatorRowMapper()
         );

@@ -25,3 +25,9 @@ INSERT INTO SENSORS VALUES (1, 'EC000801AC673410', 'tempSensor1', 'Temperature s
 -- ACTUATORS
 INSERT INTO ACTUATORS VALUES (2, '6900000002402B05', 'tableLampSwitch', 'Настольная лампа', 'true', 'switchActuator', 2);
 --
+
+
+-- USERS
+INSERT INTO USERS VALUES (1, 'mike', '$2a$10$bTyMDqHNK7NUm4qrwvvLG.bb6n.hdE3.o6Xd9mZhmjybH6Z1I0csq', 'true', 'Mike', 'Rusakovich');
+INSERT INTO AUTHORITIES VALUES (1, 'USER');
+--

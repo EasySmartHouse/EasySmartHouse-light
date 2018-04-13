@@ -20,6 +20,7 @@ public class UserRepositoryImpl implements UserRepository {
             user.setId(rs.getLong("ID"));
             user.setUsername(rs.getString("USERNAME"));
             user.setPassword(rs.getString("PASSWORD"));
+            user.setEnabled(rs.getBoolean("ENABLED"));
             user.setRole(rs.getString("ROLE"));
             user.setFirstname(rs.getString("FIRST_NAME"));
             user.setLastname(rs.getString("LAST_NAME"));
@@ -32,17 +33,26 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(User user) {
-        jdbcTemplate.update("INSERT INTO USERS (ID, USERNAME, PASSWORD, ROLE, FIRST_NAME, LAST_NAME) VALUES(?, ?, ?, ?, ?, ?)",
-                new Object[]{user.getId(), user.getUsername(), user.getPassword(), user.getRole(), user.getFirstname(), user.getLastname()}
+        int userId = jdbcTemplate.update("INSERT INTO USERS (ID, USERNAME, PASSWORD, ENABLED, FIRST_NAME, LAST_NAME) VALUES(?, ?, ?, ?, ?, ?)",
+                new Object[]{user.getId(), user.getUsername(), user.getPassword(), user.isEnabled(), user.getFirstname(), user.getLastname()}
         );
+        jdbcTemplate.update("INSERT INTO AUTHORITIES (USER_ID, ROLE) VALUES(?, ?)",
+                new Object[]{user.getId(), user.getRole()});
         return user;
     }
 
     @Override
     public User findByUsername(String username) {
-        return jdbcTemplate.queryForObject("SELECT * FROM USERS WHERE USERNAME=?",
-                new Object[]{username},
-                new UserRowMapper()
-        );
+        try {
+            return jdbcTemplate.queryForObject("SELECT usr.ID, usr.USERNAME, usr.PASSWORD, usr.ENABLED, auth.ROLE, usr.FIRST_NAME, usr.LAST_NAME " +
+                            "FROM USERS usr INNER JOIN AUTHORITIES auth ON usr.ID = auth.USER_ID " +
+                            "WHERE usr.USERNAME=?",
+                    new Object[]{username},
+                    new UserRowMapper()
+            );
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 }

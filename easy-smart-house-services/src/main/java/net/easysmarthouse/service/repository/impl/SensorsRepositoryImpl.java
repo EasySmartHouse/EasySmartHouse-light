@@ -59,7 +59,8 @@ public class SensorsRepositoryImpl implements SensorsRepository {
 
     @Override
     public List<SensorEntity> search(String term) {
-        return jdbcTemplate.query("SELECT S.* FROM FT_SEARCH_DATA(?, 0, 0) FT, SENSORS S WHERE FT.TABLE='SENSORS' AND S.ID = FT.KEYS[0]",
+        return jdbcTemplate.query("SELECT S.* FROM FT_SEARCH_DATA(?, 0, 0) FT, SENSORS S " +
+                        "WHERE FT.TABLE='SENSORS' AND S.ID = FT.KEYS[0]",
                 new Object[]{term},
                 new SensorsRowMapper());
     }

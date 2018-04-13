@@ -13,5 +13,4 @@ public class JacksonConfig {
         jackson2ObjectMapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, true);
     }
 
-
 }

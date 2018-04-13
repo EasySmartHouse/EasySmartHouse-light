@@ -32,6 +32,7 @@ dependencies {
     compile "org.springframework:spring-context-support:$springVersion"
     compile "org.springframework:spring-jdbc:$springVersion"
     compile "org.springframework:spring-tx:$springVersion"
+    compile "org.springframework.security:spring-security-core:$springVersion"
 
     compile "org.aspectj:aspectjrt:$aspectjVersion"
     compile "org.aspectj:aspectjweaver:$aspectjVersion"
@@ -86,7 +87,7 @@ jar {
     destinationDir = file("$projectDir/dist")
     archiveName "${baseName}.${extension}"
 
-    exclude ("images/**")
+    exclude("images/**")
 }
 
 clean.dependsOn(cleanDist)

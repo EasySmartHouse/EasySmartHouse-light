@@ -12,7 +12,6 @@ import java.util.Collection;
 
 import static net.easysmarthouse.util.ResponseHelper.setFullImageUrl;
 
-@CrossOrigin(origins = "http://localhost:8808", maxAge = 3600)
 @RestController
 @RequestMapping({"/spaces"})
 public class SpaceController {

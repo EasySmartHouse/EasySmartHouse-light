@@ -1,6 +1,7 @@
 package net.easysmarthouse.service.repository;
 
 import net.easysmarthouse.shared.domain.Space;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 

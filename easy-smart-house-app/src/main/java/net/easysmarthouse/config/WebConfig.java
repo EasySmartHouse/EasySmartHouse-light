@@ -1,13 +1,52 @@
 package net.easysmarthouse.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-@Configuration
-public class WebConfig {
+@Configurable
+@EnableWebSecurity
+@PropertySources({
+        @PropertySource(value = "file:services.properties", ignoreResourceNotFound = true),
+        @PropertySource(value = "classpath:services.properties", ignoreResourceNotFound = true)
+})
+public class WebConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Value("${allowed.origin}")
+    private String allowedOrigin;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -15,10 +54,34 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedMethods("GET", "POST")
-                        .allowedOrigins("*");
+                        .allowedOrigins(allowedOrigin);
             }
         };
     }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(authProvider());
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        super.configure(web);
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.cors().and()
+                .authorizeRequests()
+                .antMatchers("/user/register", "/user/login", "/logout").permitAll()
+                .anyRequest().fullyAuthenticated().and()
+                .logout()
+                .permitAll()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST")).and()
+                .httpBasic().and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
+                .csrf().disable();
+    }
+
 
 }

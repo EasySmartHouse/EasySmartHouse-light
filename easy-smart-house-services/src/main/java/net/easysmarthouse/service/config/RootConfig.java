@@ -6,6 +6,7 @@ import net.easysmarthouse.service.el.DeviceELBeanFactoryPostProcessor;
 import net.easysmarthouse.shared.service.DeviceService;
 import net.easysmarthouse.shared.service.ImageService;
 import net.easysmarthouse.shared.service.SpaceService;
+import net.easysmarthouse.shared.service.UserService;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -23,6 +24,8 @@ import org.springframework.remoting.rmi.RmiServiceExporter;
         DataSourceConfig.class})
 public class RootConfig {
 
+    private static final int REGISTRY_PORT = 9001;
+
     @Bean
     public BeanFactoryPostProcessor deviceELBeanFactoryPostProcessor() {
         return new DeviceELBeanFactoryPostProcessor();
@@ -34,7 +37,7 @@ public class RootConfig {
         serviceExporter.setServiceName("space-service");
         serviceExporter.setService(spaceService);
         serviceExporter.setServiceInterface(SpaceService.class);
-        serviceExporter.setRegistryPort(9001);
+        serviceExporter.setRegistryPort(REGISTRY_PORT);
         return serviceExporter;
     }
 
@@ -44,7 +47,7 @@ public class RootConfig {
         serviceExporter.setServiceName("image-service");
         serviceExporter.setService(imageService);
         serviceExporter.setServiceInterface(ImageService.class);
-        serviceExporter.setRegistryPort(9001);
+        serviceExporter.setRegistryPort(REGISTRY_PORT);
         return serviceExporter;
     }
 
@@ -54,7 +57,17 @@ public class RootConfig {
         serviceExporter.setServiceName("device-service");
         serviceExporter.setService(deviceService);
         serviceExporter.setServiceInterface(DeviceService.class);
-        serviceExporter.setRegistryPort(9001);
+        serviceExporter.setRegistryPort(REGISTRY_PORT);
+        return serviceExporter;
+    }
+
+    @Bean
+    public RmiServiceExporter userService(UserService userService) {
+        RmiServiceExporter serviceExporter = new RmiServiceExporter();
+        serviceExporter.setServiceName("user-service");
+        serviceExporter.setService(userService);
+        serviceExporter.setServiceInterface(UserService.class);
+        serviceExporter.setRegistryPort(REGISTRY_PORT);
         return serviceExporter;
     }
 

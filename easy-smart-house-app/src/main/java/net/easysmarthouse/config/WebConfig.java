@@ -73,7 +73,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
                 .authorizeRequests()
-                .antMatchers("/user/register", "/user/login", "/logout").permitAll()
+                .antMatchers("/user/register", "/user/login", "/logout", "/images/**").permitAll()
                 .anyRequest().fullyAuthenticated().and()
                 .logout()
                 .permitAll()

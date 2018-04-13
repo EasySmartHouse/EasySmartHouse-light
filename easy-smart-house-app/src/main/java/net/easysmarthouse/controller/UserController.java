@@ -23,7 +23,7 @@ public class UserController {
 
     @CrossOrigin
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity<?> register(@RequestBody User newUser) {
+    public ResponseEntity<User> register(@RequestBody User newUser) {
         if (userService.findByUsername(newUser.getUsername()) != null) {
             logger.error(String.format("Username Already exist: [%s]", newUser.getUsername()));
             return new ResponseEntity(
@@ -37,8 +37,11 @@ public class UserController {
 
     @CrossOrigin
     @RequestMapping("/login")
-    public Principal user(Principal principal) {
-        return principal;
+    public ResponseEntity<User> login(Principal principal) {
+        return new ResponseEntity<User>(
+                userService.findByUsername(principal.getName()),
+                HttpStatus.OK
+        );
     }
 
 

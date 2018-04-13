@@ -2,6 +2,7 @@ package net.easysmarthouse.service.repository.impl;
 
 import net.easysmarthouse.service.repository.UserRepository;
 import net.easysmarthouse.shared.domain.user.User;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -12,6 +13,8 @@ import java.sql.SQLException;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
+
+    private Logger logger = Logger.getLogger(UserRepositoryImpl.class);
 
     private class UserRowMapper implements RowMapper<User> {
         @Override
@@ -51,7 +54,7 @@ public class UserRepositoryImpl implements UserRepository {
                     new UserRowMapper()
             );
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("Couldn't find user", ex);
             return null;
         }
     }

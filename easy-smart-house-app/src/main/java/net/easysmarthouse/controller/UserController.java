@@ -16,7 +16,7 @@ import java.security.Principal;
 @RequestMapping("user")
 public class UserController {
 
-    public static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserService userService;
@@ -25,23 +25,45 @@ public class UserController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<User> register(@RequestBody User newUser) {
         if (userService.findByUsername(newUser.getUsername()) != null) {
-            logger.error(String.format("Username Already exist: [%s]", newUser.getUsername()));
+            logger.error(String.format("Username already exist: [%s]", newUser.getUsername()));
             return new ResponseEntity(
-                    new CustomError(String.format("User with username %s already exist ", newUser.getUsername())),
+                    new CustomError(String.format("User with username [%s] already exist ", newUser.getUsername())),
                     HttpStatus.CONFLICT);
         }
         newUser.setRole("USER");
-
-        return new ResponseEntity<User>(userService.save(newUser), HttpStatus.CREATED);
+        return new ResponseEntity<>(userService.save(newUser), HttpStatus.CREATED);
     }
 
     @CrossOrigin
-    @RequestMapping("/login")
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ResponseEntity<User> login(Principal principal) {
-        return new ResponseEntity<User>(
-                userService.findByUsername(principal.getName()),
-                HttpStatus.OK
-        );
+        final User user = userService.findByUsername(principal.getName());
+        if (user == null) {
+            return new ResponseEntity(new CustomError("User not found"),
+                    HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @CrossOrigin
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<?> update(@PathVariable("id") long id, @RequestBody User user) {
+        logger.info("Updating User with id {}", id);
+
+        User currentUser = userService.findById(id);
+
+        if (currentUser == null) {
+            logger.error("Unable to update. User with id {} not found.", id);
+            return new ResponseEntity(new CustomError(
+                    String.format("Unable to update. User with id [%d] not found.", id)),
+                    HttpStatus.NOT_FOUND);
+        }
+
+        currentUser.setFirstname(user.getFirstname());
+        currentUser.setLastname(user.getLastname());
+
+        userService.update(currentUser);
+        return new ResponseEntity<>(currentUser, HttpStatus.OK);
     }
 
 

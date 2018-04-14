@@ -5,7 +5,6 @@ import net.easysmarthouse.provider.device.alarm.SignalingModule;
 import net.easysmarthouse.provider.device.sensor.SensorModule;
 import net.easysmarthouse.provider.device.trigger.TriggerModule;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;

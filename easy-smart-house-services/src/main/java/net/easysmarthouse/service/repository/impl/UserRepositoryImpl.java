@@ -58,4 +58,32 @@ public class UserRepositoryImpl implements UserRepository {
             return null;
         }
     }
+
+    @Override
+    public User findById(Long id) {
+        try {
+            return jdbcTemplate.queryForObject("SELECT usr.ID, usr.USERNAME, usr.PASSWORD, usr.ENABLED, auth.ROLE, usr.FIRST_NAME, usr.LAST_NAME " +
+                            "FROM USERS usr INNER JOIN AUTHORITIES auth ON usr.ID = auth.USER_ID " +
+                            "WHERE usr.ID=?",
+                    new Object[]{id},
+                    new UserRowMapper()
+            );
+        } catch (Exception ex) {
+            logger.error("Couldn't find user", ex);
+            return null;
+        }
+    }
+
+    @Override
+    public User update(User user) {
+        try {
+            return jdbcTemplate.queryForObject("UPDATE USERS SET (FIRST_NAME, LAST_NAME) = (?, ?) WHERE ID = ? ",
+                    new Object[]{user.getFirstname(), user.getLastname(), user.getId()},
+                    new UserRowMapper()
+            );
+        } catch (Exception ex) {
+            logger.error("Couldn't update user", ex);
+            return null;
+        }
+    }
 }

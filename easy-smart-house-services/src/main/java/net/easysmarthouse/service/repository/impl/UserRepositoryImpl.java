@@ -77,10 +77,11 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User update(User user) {
         try {
-            return jdbcTemplate.queryForObject("UPDATE USERS SET (FIRST_NAME, LAST_NAME) = (?, ?) WHERE ID = ? ",
-                    new Object[]{user.getFirstname(), user.getLastname(), user.getId()},
-                    new UserRowMapper()
+            long userId = jdbcTemplate.update("UPDATE USERS SET (FIRST_NAME, LAST_NAME) = (?, ?) WHERE ID = ? ",
+                    new Object[]{user.getFirstname(), user.getLastname(), user.getId()}
             );
+            user.setId(userId);
+            return user;
         } catch (Exception ex) {
             logger.error("Couldn't update user", ex);
             return null;

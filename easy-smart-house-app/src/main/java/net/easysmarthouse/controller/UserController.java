@@ -24,6 +24,9 @@ public class UserController {
     @CrossOrigin
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<User> register(@RequestBody User newUser) {
+        if (newUser == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         if (userService.findByUsername(newUser.getUsername()) != null) {
             logger.error(String.format("Username already exist: [%s]", newUser.getUsername()));
             return new ResponseEntity(
@@ -37,6 +40,10 @@ public class UserController {
     @CrossOrigin
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ResponseEntity<User> login(Principal principal) {
+        if (principal == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         final User user = userService.findByUsername(principal.getName());
         if (user == null) {
             return new ResponseEntity(new CustomError("User not found"),
@@ -48,6 +55,9 @@ public class UserController {
     @CrossOrigin
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> update(@PathVariable("id") long id, @RequestBody User user) {
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         logger.info("Updating User with id {}", id);
 
         User currentUser = userService.findById(id);

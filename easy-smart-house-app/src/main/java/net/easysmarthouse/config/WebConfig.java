@@ -1,5 +1,6 @@
 package net.easysmarthouse.config;
 
+import net.easysmarthouse.web.auth.StayLogoutSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,7 +78,8 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().fullyAuthenticated().and()
                 .logout()
                 .permitAll()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST")).and()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
+                .logoutSuccessHandler(new StayLogoutSuccessHandler()).and()
                 .httpBasic().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
                 .csrf().disable();

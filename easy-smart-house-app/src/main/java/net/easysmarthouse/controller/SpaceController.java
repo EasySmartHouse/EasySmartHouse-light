@@ -44,6 +44,9 @@ public class SpaceController {
     @CrossOrigin
     @PostMapping
     public ResponseEntity<?> saveSpaces(@RequestBody Space space) {
+        if (space == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         int spaceId = spaceService.save(space);
         space.setId(spaceId);
         return new ResponseEntity<>(space, HttpStatus.CREATED);
@@ -51,9 +54,12 @@ public class SpaceController {
 
     @CrossOrigin
     @PutMapping
-    public Space updateSpace(@RequestBody Space space) {
+    public ResponseEntity<?>  updateSpace(@RequestBody Space space) {
+        if (space == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         spaceService.update(space);
-        return space;
+        return new ResponseEntity<>(space, HttpStatus.CREATED);
     }
 
     @CrossOrigin

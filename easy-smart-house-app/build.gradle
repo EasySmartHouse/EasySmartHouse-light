@@ -25,6 +25,9 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.springframework.boot:spring-boot-starter-security")
 
+    compile("io.springfox:springfox-swagger2:$springFoxSwaggerVersion")
+    compile("io.springfox:springfox-swagger-ui:$springFoxSwaggerVersion")
+
     compile project(":easy-smart-house-device")
     compile project(":easy-smart-house-network")
     compile project(":easy-smart-house-shared")

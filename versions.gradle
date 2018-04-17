@@ -12,4 +12,5 @@ allprojects {
     ext['flywayVersion'] = '5.0.7'
     ext['jsscVersion'] = '2.8.0'
     ext['jacksonVersion'] = '2.8.10'
+    ext['springFoxSwaggerVersion'] = '2.7.0'
 }

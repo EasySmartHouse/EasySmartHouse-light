@@ -7,6 +7,7 @@ dependencies {
     compile "org.springframework:spring-core:$springVersion"
     compile "org.springframework:spring-context:$springVersion"
     compile "org.springframework.security:spring-security-core:$springVersion"
+    compile "javax.validation:validation-api:$validationApiVersion"
 
     compile project(":easy-smart-house-device")
     compile project(":easy-smart-house-network")

@@ -27,6 +27,7 @@ public class UserRepositoryImpl implements UserRepository {
             user.setRole(rs.getString("ROLE"));
             user.setFirstname(rs.getString("FIRST_NAME"));
             user.setLastname(rs.getString("LAST_NAME"));
+            user.setEmail(rs.getString("EMAIL"));
             return user;
         }
     }
@@ -36,8 +37,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(User user) {
-        int userId = jdbcTemplate.update("INSERT INTO USERS (ID, USERNAME, PASSWORD, ENABLED, FIRST_NAME, LAST_NAME) VALUES(?, ?, ?, ?, ?, ?)",
-                new Object[]{user.getId(), user.getUsername(), user.getPassword(), user.isEnabled(), user.getFirstname(), user.getLastname()}
+        int userId = jdbcTemplate.update("INSERT INTO USERS (ID, USERNAME, PASSWORD, ENABLED, FIRST_NAME, LAST_NAME, EMAIL) VALUES(?, ?, ?, ?, ?, ?, ?)",
+                new Object[]{user.getId(), user.getUsername(), user.getPassword(), user.isEnabled(), user.getFirstname(), user.getLastname(), user.getEmail()}
         );
         jdbcTemplate.update("INSERT INTO AUTHORITIES (USER_ID, ROLE) VALUES(?, ?)",
                 new Object[]{user.getId(), user.getRole()});
@@ -47,7 +48,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User findByUsername(String username) {
         try {
-            return jdbcTemplate.queryForObject("SELECT usr.ID, usr.USERNAME, usr.PASSWORD, usr.ENABLED, auth.ROLE, usr.FIRST_NAME, usr.LAST_NAME " +
+            return jdbcTemplate.queryForObject("SELECT usr.ID, usr.USERNAME, usr.PASSWORD, usr.ENABLED, auth.ROLE, usr.FIRST_NAME, usr.LAST_NAME, usr.EMAIL " +
                             "FROM USERS usr INNER JOIN AUTHORITIES auth ON usr.ID = auth.USER_ID " +
                             "WHERE usr.USERNAME=?",
                     new Object[]{username},
@@ -62,7 +63,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User findById(Long id) {
         try {
-            return jdbcTemplate.queryForObject("SELECT usr.ID, usr.USERNAME, usr.PASSWORD, usr.ENABLED, auth.ROLE, usr.FIRST_NAME, usr.LAST_NAME " +
+            return jdbcTemplate.queryForObject("SELECT usr.ID, usr.USERNAME, usr.PASSWORD, usr.ENABLED, auth.ROLE, usr.FIRST_NAME, usr.LAST_NAME, usr.EMAIL " +
                             "FROM USERS usr INNER JOIN AUTHORITIES auth ON usr.ID = auth.USER_ID " +
                             "WHERE usr.ID=?",
                     new Object[]{id},

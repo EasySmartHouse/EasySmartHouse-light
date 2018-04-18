@@ -6,20 +6,35 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class User implements UserDetails {
 
-    public static enum Role {USER}
+    public static enum Role {USER, ADMIN}
 
     private Long id;
+    @NotNull
+    @NotEmpty
     private String username;
+    @NotNull
+    @NotEmpty
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String matchingPassword;
+    @NotNull
+    @NotEmpty
     private String firstname;
+    @NotNull
+    @NotEmpty
     private String lastname;
     private String role = Role.USER.name();
+    @NotNull
+    @NotEmpty
+    private String email;
     private boolean enabled = true;
 
     public User() {
@@ -126,14 +141,33 @@ public class User implements UserDetails {
         this.lastname = lastname;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getMatchingPassword() {
+        return matchingPassword;
+    }
+
+    public void setMatchingPassword(String matchingPassword) {
+        this.matchingPassword = matchingPassword;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
                 ", firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", role='" + role + '\'' +
+                ", email='" + email + '\'' +
+                ", enabled=" + enabled +
                 '}';
     }
 }

@@ -1,5 +1,7 @@
 package net.easysmarthouse.config;
 
+import net.easysmarthouse.web.security.SimpleAccessDeniedHandler;
+import net.easysmarthouse.web.security.RestBasicAuthenticationEntryPoint;
 import net.easysmarthouse.web.auth.StayLogoutSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -32,6 +34,12 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private SimpleAccessDeniedHandler accessDeniedHandler;
+
+    @Autowired
+    private RestBasicAuthenticationEntryPoint authenticationEntryPoint;
 
     @Value("${allowed.origin}")
     private String allowedOrigin;
@@ -76,6 +84,8 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/user/register", "/user/login", "/logout", "/images/**").permitAll()
                 .anyRequest().fullyAuthenticated().and()
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
+                .authenticationEntryPoint(authenticationEntryPoint).and()
                 .logout()
                 .permitAll()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))

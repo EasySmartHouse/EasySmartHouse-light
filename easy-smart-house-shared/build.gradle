@@ -8,6 +8,8 @@ dependencies {
     compile "org.springframework:spring-context:$springVersion"
     compile "org.springframework.security:spring-security-core:$springVersion"
     compile "javax.validation:validation-api:$validationApiVersion"
+    compile "org.passay:passay:$passayVersion"
+    compile "com.google.guava:guava:$guavaVersion"
 
     compile project(":easy-smart-house-device")
     compile project(":easy-smart-house-network")

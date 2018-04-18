@@ -3,8 +3,10 @@ package net.easysmarthouse.service.impl;
 import net.easysmarthouse.service.repository.UserRepository;
 import net.easysmarthouse.shared.domain.user.User;
 import net.easysmarthouse.shared.service.UserService;
+import net.easysmarthouse.shared.validation.EmailExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -13,22 +15,35 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
+    @Transactional
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
     @Override
+    @Transactional
     public User save(User user) {
         return userRepository.save(user);
     }
 
     @Override
-    public User findById(Long id){
+    @Transactional(readOnly = true)
+    public User findById(Long id) {
         return userRepository.findById(id);
     }
 
     @Override
+    @Transactional
     public User update(User user) {
         return userRepository.update(user);
+    }
+
+    @Override
+    public User findByEmail(String email) throws EmailExistsException {
+        final User user = userRepository.findByEmail(email);
+        if (user != null) {
+            throw new EmailExistsException();
+        }
+        return user;
     }
 }

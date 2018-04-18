@@ -4,9 +4,17 @@ import net.easysmarthouse.service.repository.UserRepository;
 import net.easysmarthouse.shared.domain.user.User;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,10 +44,11 @@ public class UserRepositoryImpl implements UserRepository {
     private JdbcTemplate jdbcTemplate;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public User save(User user) {
-        int userId = jdbcTemplate.update("INSERT INTO USERS (ID, USERNAME, PASSWORD, ENABLED, FIRST_NAME, LAST_NAME, EMAIL) VALUES(?, ?, ?, ?, ?, ?, ?)",
-                new Object[]{user.getId(), user.getUsername(), user.getPassword(), user.isEnabled(), user.getFirstname(), user.getLastname(), user.getEmail()}
-        );
+        long userId = jdbcTemplate.update("INSERT INTO USERS (ID, USERNAME, PASSWORD, ENABLED, FIRST_NAME, LAST_NAME, EMAIL) VALUES(?, ?, ?, ?, ?, ?, ?)",
+                new Object[]{user.getId(), user.getUsername(), user.getPassword(), user.isEnabled(), user.getFirstname(), user.getLastname(), user.getEmail()});
+        user.setId(userId);
         jdbcTemplate.update("INSERT INTO AUTHORITIES (USER_ID, ROLE) VALUES(?, ?)",
                 new Object[]{user.getId(), user.getRole()});
         return user;
@@ -56,6 +65,23 @@ public class UserRepositoryImpl implements UserRepository {
             );
         } catch (Exception ex) {
             logger.error("Couldn't find user", ex);
+            return null;
+        }
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        try {
+            return jdbcTemplate.queryForObject("SELECT usr.ID, usr.USERNAME, usr.PASSWORD, usr.ENABLED, auth.ROLE, usr.FIRST_NAME, usr.LAST_NAME, usr.EMAIL " +
+                            "FROM USERS usr INNER JOIN AUTHORITIES auth ON usr.ID = auth.USER_ID " +
+                            "WHERE usr.EMAIL=?",
+                    new Object[]{email},
+                    new UserRowMapper()
+            );
+        } catch (EmptyResultDataAccessException emptyEx) {
+            return null;
+        } catch (Exception ex) {
+            logger.error("Couldn't find user by email", ex);
             return null;
         }
     }

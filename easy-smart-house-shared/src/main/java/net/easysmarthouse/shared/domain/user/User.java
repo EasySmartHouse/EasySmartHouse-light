@@ -2,15 +2,19 @@ package net.easysmarthouse.shared.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import net.easysmarthouse.shared.validation.PasswordMatches;
+import net.easysmarthouse.shared.validation.ValidPassword;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Collection;
 
+@PasswordMatches
 public class User implements UserDetails {
 
     public static enum Role {USER, ADMIN}
@@ -21,9 +25,11 @@ public class User implements UserDetails {
     private String username;
     @NotNull
     @NotEmpty
+    @ValidPassword
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Size(min = 1)
     private String matchingPassword;
     @NotNull
     @NotEmpty

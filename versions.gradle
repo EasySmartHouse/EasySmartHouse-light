@@ -14,4 +14,6 @@ allprojects {
     ext['jacksonVersion'] = '2.8.10'
     ext['springFoxSwaggerVersion'] = '2.7.0'
     ext['validationApiVersion'] = '2.0.1.Final'
+    ext['passayVersion'] = '1.0'
+    ext['guavaVersion'] = '20.0'
 }

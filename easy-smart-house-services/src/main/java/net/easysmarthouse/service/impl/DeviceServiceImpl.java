@@ -6,6 +6,7 @@ import net.easysmarthouse.shared.domain.device.DeviceEntity;
 import net.easysmarthouse.shared.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -20,6 +21,7 @@ public class DeviceServiceImpl implements DeviceService {
     private ActuatorsRepository actuatorsRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public Collection<DeviceEntity> searchDevices(final String term) {
         Collection<DeviceEntity> foundDevices = new LinkedHashSet<>();
 

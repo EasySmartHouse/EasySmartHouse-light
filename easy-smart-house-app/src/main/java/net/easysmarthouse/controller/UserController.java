@@ -2,14 +2,17 @@ package net.easysmarthouse.controller;
 
 import net.easysmarthouse.shared.domain.user.User;
 import net.easysmarthouse.shared.service.UserService;
+import net.easysmarthouse.shared.validation.EmailExistsException;
 import net.easysmarthouse.util.CustomError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 
 @RestController
@@ -23,7 +26,7 @@ public class UserController {
 
     @CrossOrigin
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity<User> register(@RequestBody User newUser) {
+    public ResponseEntity<User> register(final @RequestBody User newUser) {
         if (newUser == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -33,6 +36,15 @@ public class UserController {
                     new CustomError(String.format("User with username [%s] already exist ", newUser.getUsername())),
                     HttpStatus.CONFLICT);
         }
+
+        try {
+            userService.findByEmail(newUser.getEmail());
+        } catch (EmailExistsException ex) {
+            return new ResponseEntity(
+                    new CustomError(String.format("User with such email [%s] already exist ", newUser.getEmail())),
+                    HttpStatus.CONFLICT);
+        }
+
         newUser.setRole("USER");
         return new ResponseEntity<>(userService.save(newUser), HttpStatus.CREATED);
     }

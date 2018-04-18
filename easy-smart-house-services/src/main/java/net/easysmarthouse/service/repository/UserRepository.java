@@ -8,6 +8,8 @@ public interface UserRepository {
 
     public User findByUsername(String username);
 
+    public User findByEmail(String email);
+
     public User findById(Long id);
 
     public User update(User user);

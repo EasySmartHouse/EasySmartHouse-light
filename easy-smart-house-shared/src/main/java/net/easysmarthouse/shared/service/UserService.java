@@ -1,6 +1,7 @@
 package net.easysmarthouse.shared.service;
 
 import net.easysmarthouse.shared.domain.user.User;
+import net.easysmarthouse.shared.domain.user.VerificationToken;
 import net.easysmarthouse.shared.validation.EmailExistsException;
 
 public interface UserService {
@@ -14,5 +15,7 @@ public interface UserService {
     public User findById(Long id);
 
     public User update(User user);
+
+    public void createVerificationToken(User user, String token);
 
 }

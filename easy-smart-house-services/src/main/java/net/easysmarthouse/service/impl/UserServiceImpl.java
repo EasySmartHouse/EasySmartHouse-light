@@ -1,7 +1,9 @@
 package net.easysmarthouse.service.impl;
 
 import net.easysmarthouse.service.repository.UserRepository;
+import net.easysmarthouse.service.repository.VerificationTokenRepository;
 import net.easysmarthouse.shared.domain.user.User;
+import net.easysmarthouse.shared.domain.user.VerificationToken;
 import net.easysmarthouse.shared.service.UserService;
 import net.easysmarthouse.shared.validation.EmailExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private VerificationTokenRepository verificationTokenRepository;
 
     @Override
     @Transactional
@@ -45,5 +50,13 @@ public class UserServiceImpl implements UserService {
             throw new EmailExistsException();
         }
         return user;
+    }
+
+    @Override
+    public void createVerificationToken(User user, String token) {
+        final VerificationToken verificationToken = new VerificationToken(token);
+        verificationToken.setUserId(user.getId());
+        verificationToken.setUser(user);
+        verificationTokenRepository.save(verificationToken);
     }
 }

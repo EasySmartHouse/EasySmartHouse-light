@@ -1,18 +1,19 @@
 package net.easysmarthouse.controller;
 
 import net.easysmarthouse.shared.domain.user.User;
+import net.easysmarthouse.shared.event.VerifyRegistrationEvent;
 import net.easysmarthouse.shared.service.UserService;
 import net.easysmarthouse.shared.validation.EmailExistsException;
 import net.easysmarthouse.util.CustomError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
-import javax.validation.Valid;
 import java.security.Principal;
 
 @RestController
@@ -24,9 +25,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
     @CrossOrigin
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity<User> register(final @RequestBody User newUser) {
+    public ResponseEntity<User> register(final @RequestBody User newUser, WebRequest request) {
         if (newUser == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -46,7 +50,14 @@ public class UserController {
         }
 
         newUser.setRole("USER");
-        return new ResponseEntity<>(userService.save(newUser), HttpStatus.CREATED);
+        newUser.setEnabled(Boolean.FALSE);
+
+        userService.save(newUser);
+        eventPublisher.publishEvent(
+                new VerifyRegistrationEvent(request.getContextPath(), request.getLocale(), newUser)
+        );
+
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
     @CrossOrigin
@@ -58,7 +69,8 @@ public class UserController {
 
         final User user = userService.findByUsername(principal.getName());
         if (user == null) {
-            return new ResponseEntity(new CustomError("User not found"),
+            return new ResponseEntity(
+                    new CustomError("User not found"),
                     HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(user, HttpStatus.OK);

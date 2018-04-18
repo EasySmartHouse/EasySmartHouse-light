@@ -16,4 +16,5 @@ allprojects {
     ext['validationApiVersion'] = '2.0.1.Final'
     ext['passayVersion'] = '1.0'
     ext['guavaVersion'] = '20.0'
+    ext['mailVersion'] = '1.4.7'
 }

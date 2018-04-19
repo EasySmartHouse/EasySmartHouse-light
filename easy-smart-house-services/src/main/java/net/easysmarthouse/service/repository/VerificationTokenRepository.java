@@ -6,4 +6,6 @@ public interface VerificationTokenRepository {
 
     public VerificationToken save(VerificationToken verificationToken);
 
+    public VerificationToken getToken(String token);
+
 }

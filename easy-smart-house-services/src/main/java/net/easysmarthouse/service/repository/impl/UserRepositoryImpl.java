@@ -49,6 +49,7 @@ public class UserRepositoryImpl implements UserRepository {
         long userId = jdbcTemplate.update("INSERT INTO USERS (ID, USERNAME, PASSWORD, ENABLED, FIRST_NAME, LAST_NAME, EMAIL) VALUES(?, ?, ?, ?, ?, ?, ?)",
                 new Object[]{user.getId(), user.getUsername(), user.getPassword(), user.isEnabled(), user.getFirstname(), user.getLastname(), user.getEmail()});
         user.setId(userId);
+        //TODO the update doesnt see the previous update
         jdbcTemplate.update("INSERT INTO AUTHORITIES (USER_ID, ROLE) VALUES(?, ?)",
                 new Object[]{user.getId(), user.getRole()});
         return user;
@@ -104,8 +105,8 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User update(User user) {
         try {
-            long userId = jdbcTemplate.update("UPDATE USERS SET (FIRST_NAME, LAST_NAME) = (?, ?) WHERE ID = ? ",
-                    new Object[]{user.getFirstname(), user.getLastname(), user.getId()}
+            long userId = jdbcTemplate.update("UPDATE USERS SET (FIRST_NAME, LAST_NAME, ENABLED) = (?, ?, ?) WHERE ID = ? ",
+                    new Object[]{user.getFirstname(), user.getLastname(), user.isEnabled(), user.getId()}
             );
             user.setId(userId);
             return user;

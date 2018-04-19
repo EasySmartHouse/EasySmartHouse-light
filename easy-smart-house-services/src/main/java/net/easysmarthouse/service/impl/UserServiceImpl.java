@@ -59,4 +59,9 @@ public class UserServiceImpl implements UserService {
         verificationToken.setUser(user);
         verificationTokenRepository.save(verificationToken);
     }
+
+    @Override
+    public VerificationToken getVerificationToken(String token) {
+        return verificationTokenRepository.getToken(token);
+    }
 }

@@ -44,4 +44,13 @@ public class VerificationTokenRepositoryImpl implements VerificationTokenReposit
         verificationToken.setId(tokenId);
         return verificationToken;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public VerificationToken getToken(String token) {
+
+        return jdbcTemplate.queryForObject("SELECT * FROM VERIFICATION_TOKEN WHERE TOKEN=?",
+                new Object[]{token},
+                new VerificationTokenMapper());
+    }
 }

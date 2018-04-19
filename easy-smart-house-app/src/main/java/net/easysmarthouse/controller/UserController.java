@@ -1,6 +1,7 @@
 package net.easysmarthouse.controller;
 
 import net.easysmarthouse.shared.domain.user.User;
+import net.easysmarthouse.shared.domain.user.VerificationToken;
 import net.easysmarthouse.shared.event.VerifyRegistrationEvent;
 import net.easysmarthouse.shared.service.UserService;
 import net.easysmarthouse.shared.validation.EmailExistsException;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import java.security.Principal;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("user")
@@ -99,6 +101,5 @@ public class UserController {
         userService.update(currentUser);
         return new ResponseEntity<>(currentUser, HttpStatus.OK);
     }
-
-
+    
 }

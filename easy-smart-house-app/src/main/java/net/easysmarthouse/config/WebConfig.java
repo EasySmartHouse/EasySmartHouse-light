@@ -82,7 +82,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
                 .authorizeRequests()
-                .antMatchers("/user/register", "/user/login", "/logout", "/images/**").permitAll()
+                .antMatchers("/user/register", "/user/login", "/user/confirmRegistration", "/logout", "/images/**").permitAll()
                 .anyRequest().fullyAuthenticated().and()
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
                 .authenticationEntryPoint(authenticationEntryPoint).and()

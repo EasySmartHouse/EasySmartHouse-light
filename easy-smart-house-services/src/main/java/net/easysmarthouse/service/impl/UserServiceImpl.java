@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -61,7 +63,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public VerificationToken getVerificationToken(String token) {
-        return verificationTokenRepository.getToken(token);
+    public VerificationToken getVerificationToken(String token, boolean userInclude) {
+        final VerificationToken verificationToken = verificationTokenRepository.getToken(token);
+
+        Optional.ofNullable(verificationToken)
+                .ifPresent((verifyToken) -> {
+                    if (userInclude) {
+                        verificationToken.setUser(
+                                userRepository.findById(verificationToken.getUserId()));
+                    }
+                });
+
+        return verificationToken;
     }
 }

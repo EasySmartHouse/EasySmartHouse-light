@@ -4,6 +4,7 @@ import net.easysmarthouse.service.repository.VerificationTokenRepository;
 import net.easysmarthouse.shared.domain.user.VerificationToken;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -48,9 +49,12 @@ public class VerificationTokenRepositoryImpl implements VerificationTokenReposit
     @Override
     @Transactional(readOnly = true)
     public VerificationToken getToken(String token) {
-
-        return jdbcTemplate.queryForObject("SELECT * FROM VERIFICATION_TOKEN WHERE TOKEN=?",
-                new Object[]{token},
-                new VerificationTokenMapper());
+        try {
+            return jdbcTemplate.queryForObject("SELECT * FROM VERIFICATION_TOKEN WHERE TOKEN=?",
+                    new Object[]{token},
+                    new VerificationTokenMapper());
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
     }
 }

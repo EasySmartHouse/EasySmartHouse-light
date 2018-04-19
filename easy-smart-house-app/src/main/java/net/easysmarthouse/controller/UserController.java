@@ -6,16 +6,20 @@ import net.easysmarthouse.shared.event.VerifyRegistrationEvent;
 import net.easysmarthouse.shared.service.UserService;
 import net.easysmarthouse.shared.validation.EmailExistsException;
 import net.easysmarthouse.util.CustomError;
+import net.easysmarthouse.util.ErrorType;
+import net.easysmarthouse.validation.RestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import java.security.Principal;
+import java.util.Calendar;
 import java.util.Locale;
 
 @RestController
@@ -29,6 +33,9 @@ public class UserController {
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    private MessageSource messages;
 
     @CrossOrigin
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -101,5 +108,28 @@ public class UserController {
         userService.update(currentUser);
         return new ResponseEntity<>(currentUser, HttpStatus.OK);
     }
-    
+
+    @RequestMapping(value = "/confirmRegistration", method = RequestMethod.GET)
+    public ResponseEntity<?> confirmRegistration(WebRequest request, @RequestParam("token") String token) {
+        Locale locale = request.getLocale();
+
+        VerificationToken verificationToken = userService.getVerificationToken(token, true);
+        if (verificationToken == null) {
+            String message = messages.getMessage("auth.message.invalidToken", null, locale);
+            throw new RestException("token", ErrorType.INVALID_TOKEN, message);
+        }
+
+        User user = verificationToken.getUser();
+        Calendar cal = Calendar.getInstance();
+        if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            String message = messages.getMessage("auth.message.expired", null, locale);
+            throw new RestException("token", ErrorType.INVALID_TOKEN, message);
+        }
+
+        user.setEnabled(true);
+        userService.update(user);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

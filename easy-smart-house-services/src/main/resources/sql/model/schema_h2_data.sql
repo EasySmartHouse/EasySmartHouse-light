@@ -34,3 +34,5 @@ INSERT INTO AUTHORITIES VALUES (300, 'USER');
 INSERT INTO USERS VALUES (400, 'mike2', '$2a$10$bTyMDqHNK7NUm4qrwvvLG.bb6n.hdE3.o6Xd9mZhmjybH6Z1I0csq', 'true', 'Mike', 'Rusakovich', 'mikhail.complete.admin@gmail.com');
 INSERT INTO AUTHORITIES VALUES (400, 'ADMIN');
 --
+INSERT INTO VERIFICATION_TOKEN VALUES (34, '23a45aa9-b627-423b-a0fb-91826556955c', parsedatetime('04-19-2018 18:47:52.69', 'dd-MM-yyyy hh:mm:ss.SS'), 400);
+--

@@ -18,6 +18,6 @@ public interface UserService {
 
     public void createVerificationToken(User user, String token);
 
-    public VerificationToken getVerificationToken(String token);
+    public VerificationToken getVerificationToken(String token, boolean userInclude);
 
 }

@@ -19,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -40,6 +41,9 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private RestBasicAuthenticationEntryPoint authenticationEntryPoint;
+
+    @Autowired
+    private AuthenticationFailureHandler userAuthenticationFailureHandler;
 
     @Value("${allowed.origin}")
     private String allowedOrigin;

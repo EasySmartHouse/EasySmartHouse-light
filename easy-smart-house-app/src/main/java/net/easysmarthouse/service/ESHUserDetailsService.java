@@ -24,6 +24,11 @@ public class ESHUserDetailsService implements UserDetailsService {
         if (userDetails == null) {
             throw new UsernameNotFoundException("No user found");
         }
+
+        if (!userDetails.isEnabled()) {
+            throw new RuntimeException("User is disabled");
+        }
+
         return userDetails;
     }
 

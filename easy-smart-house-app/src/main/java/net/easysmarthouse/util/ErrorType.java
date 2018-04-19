@@ -5,5 +5,6 @@ public enum ErrorType {
     INVALID_TOKEN,
     REGISTRATION_EXPIRED,
     ACCESS_DENIED,
-    FORBIDDEN
+    FORBIDDEN,
+    USER_NOT_FOUND
 }

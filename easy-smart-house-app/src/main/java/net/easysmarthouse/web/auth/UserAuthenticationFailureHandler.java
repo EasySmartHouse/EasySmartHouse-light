@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Locale;
 
-@Component("userAuthenticationFailureHandler")
+//@Component("userAuthenticationFailureHandler")
 public class UserAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     @Autowired

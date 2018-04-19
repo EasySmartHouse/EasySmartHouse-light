@@ -1,6 +1,7 @@
 package net.easysmarthouse.validation;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -13,6 +14,13 @@ public class ErrorDetails implements Serializable {
     public ErrorDetails(Date timestamp, Collection<ErrorField> errors, String details) {
         this.timestamp = timestamp;
         this.errors = errors;
+        this.details = details;
+    }
+
+    public ErrorDetails(Date timestamp, ErrorField error, String details) {
+        this.timestamp = timestamp;
+        this.errors = new ArrayList<>(1);
+        this.errors.add(error);
         this.details = details;
     }
 

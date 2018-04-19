@@ -20,4 +20,6 @@ public interface UserService {
 
     public VerificationToken getVerificationToken(String token, boolean userInclude);
 
+    public VerificationToken generateNewVerificationToken(final String existingVerificationToken, boolean userInclude);
+
 }

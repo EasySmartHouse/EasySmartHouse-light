@@ -42,9 +42,6 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private RestBasicAuthenticationEntryPoint authenticationEntryPoint;
 
-    @Autowired
-    private AuthenticationFailureHandler userAuthenticationFailureHandler;
-
     @Value("${allowed.origin}")
     private String allowedOrigin;
 

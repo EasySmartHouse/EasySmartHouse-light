@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -74,6 +75,24 @@ public class UserServiceImpl implements UserService {
                     }
                 });
 
+        return verificationToken;
+    }
+
+    @Override
+    @Transactional
+    public VerificationToken generateNewVerificationToken(String existingVerificationToken, boolean userInclude) {
+        final VerificationToken verificationToken = verificationTokenRepository.getToken(existingVerificationToken);
+
+        Optional.ofNullable(verificationToken)
+                .ifPresent((verifyToken) -> {
+                    if (userInclude) {
+                        verificationToken.setUser(
+                                userRepository.findById(verificationToken.getUserId()));
+                    }
+                });
+
+        verificationToken.updateToken(UUID.randomUUID().toString());
+        verificationTokenRepository.update(verificationToken);
         return verificationToken;
     }
 }

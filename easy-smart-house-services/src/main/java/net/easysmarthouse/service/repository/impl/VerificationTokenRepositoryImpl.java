@@ -57,4 +57,18 @@ public class VerificationTokenRepositoryImpl implements VerificationTokenReposit
             return null;
         }
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public VerificationToken update(VerificationToken verificationToken) {
+        try {
+            jdbcTemplate.update("UPDATE VERIFICATION_TOKEN SET (TOKEN, EXPIRY_DATE) = (?, ?) WHERE ID = ? ",
+                    new Object[]{verificationToken.getToken(), verificationToken.getExpiryDate()}
+            );
+            return verificationToken;
+        } catch (Exception ex) {
+            logger.error("Couldn't update token", ex);
+            return null;
+        }
+    }
 }

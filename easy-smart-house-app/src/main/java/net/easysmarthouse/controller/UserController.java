@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
@@ -36,6 +37,9 @@ public class UserController {
 
     @Autowired
     private MessageSource messages;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @CrossOrigin
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -60,6 +64,7 @@ public class UserController {
 
         newUser.setRole("USER");
         newUser.setEnabled(Boolean.FALSE);
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 
         userService.save(newUser);
         eventPublisher.publishEvent(
@@ -128,6 +133,24 @@ public class UserController {
 
         user.setEnabled(true);
         userService.update(user);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @RequestMapping(value = "/resendRegistrationToken", method = RequestMethod.GET)
+    public ResponseEntity<?> resendRegistrationToken(WebRequest request, @RequestParam("token") String token) {
+        Locale locale = request.getLocale();
+
+        VerificationToken verificationToken = userService.generateNewVerificationToken(token, true);
+        if (verificationToken == null) {
+            String message = messages.getMessage("auth.message.invalidToken", null, locale);
+            throw new RestException("token", ErrorType.INVALID_TOKEN, message);
+        }
+
+        eventPublisher.publishEvent(
+                new VerifyRegistrationEvent(request.getContextPath(), request.getLocale(), verificationToken.getUser())
+        );
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

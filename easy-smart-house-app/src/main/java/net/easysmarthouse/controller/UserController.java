@@ -1,12 +1,15 @@
 package net.easysmarthouse.controller;
 
+import net.easysmarthouse.mail.MailBuilder;
+import net.easysmarthouse.service.UserSecurityService;
+import net.easysmarthouse.shared.domain.user.PasswordChange;
 import net.easysmarthouse.shared.domain.user.User;
 import net.easysmarthouse.shared.domain.user.VerificationToken;
 import net.easysmarthouse.shared.event.VerifyRegistrationEvent;
 import net.easysmarthouse.shared.service.UserService;
-import net.easysmarthouse.shared.validation.EmailExistsException;
 import net.easysmarthouse.util.CustomError;
 import net.easysmarthouse.util.ErrorType;
+import net.easysmarthouse.util.RequestHelper;
 import net.easysmarthouse.validation.RestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,13 +18,19 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("user")
@@ -33,6 +42,9 @@ public class UserController {
     private UserService userService;
 
     @Autowired
+    private UserSecurityService userSecurityService;
+
+    @Autowired
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
@@ -40,6 +52,12 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Autowired
+    private MailBuilder mailBuilder;
 
     @CrossOrigin
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -54,9 +72,7 @@ public class UserController {
                     HttpStatus.CONFLICT);
         }
 
-        try {
-            userService.findByEmail(newUser.getEmail());
-        } catch (EmailExistsException ex) {
+        if (userService.findByEmail(newUser.getEmail()) != null) {
             return new ResponseEntity(
                     new CustomError(String.format("User with such email [%s] already exist ", newUser.getEmail())),
                     HttpStatus.CONFLICT);
@@ -154,5 +170,50 @@ public class UserController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @RequestMapping(value = "resetPassword", method = RequestMethod.POST)
+    public ResponseEntity<?> resetPassword(HttpServletRequest request, @RequestParam("email") String email) {
+        Locale locale = request.getLocale();
+
+        User user = userService.findByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        String token = UUID.randomUUID().toString();
+        userService.createPasswordResetTokenForUser(user, token);
+
+        final String url = RequestHelper.getAppUrl(request)
+                + "/user/changePassword?id="
+                + user.getId() + "&token=" + token;
+        final String message = messages.getMessage("message.resetPassword", null, locale);
+
+        mailSender.send(
+                mailBuilder.createMessage("Reset Password", message + " \r\n" + url, user)
+        );
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/changePassword", method = RequestMethod.GET)
+    public ResponseEntity<?> changePassword(Locale locale, @RequestParam("id") long id, @RequestParam("token") String token) {
+        String result = userSecurityService.validatePasswordResetToken(id, token);
+        if (result != null) {
+            throw new RestException("token", ErrorType.INVALID_TOKEN,
+                    messages.getMessage("auth.message." + result, null, locale));
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/savePassword", method = RequestMethod.POST)
+    public ResponseEntity<?> savePassword(Locale locale, @Valid PasswordChange passwordChange) {
+        final User user = (User) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        user.setPassword(passwordEncoder.encode(passwordChange.getNewPassword()));
+        userService.changeUserPassword(user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 }

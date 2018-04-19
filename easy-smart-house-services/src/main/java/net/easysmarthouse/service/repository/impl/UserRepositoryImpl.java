@@ -115,4 +115,18 @@ public class UserRepositoryImpl implements UserRepository {
             return null;
         }
     }
+
+    @Override
+    public User changePassword(User user) {
+        try {
+            long userId = jdbcTemplate.update("UPDATE USERS SET (PASSWORD) = (?) WHERE ID = ? ",
+                    new Object[]{user.getPassword(), user.getId()}
+            );
+            user.setId(userId);
+            return user;
+        } catch (Exception ex) {
+            logger.error("Couldn't update password", ex);
+            return null;
+        }
+    }
 }

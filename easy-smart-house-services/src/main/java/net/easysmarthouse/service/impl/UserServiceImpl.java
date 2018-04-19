@@ -1,7 +1,9 @@
 package net.easysmarthouse.service.impl;
 
+import net.easysmarthouse.service.repository.PasswordResetTokenRepository;
 import net.easysmarthouse.service.repository.UserRepository;
 import net.easysmarthouse.service.repository.VerificationTokenRepository;
+import net.easysmarthouse.shared.domain.user.PasswordResetToken;
 import net.easysmarthouse.shared.domain.user.User;
 import net.easysmarthouse.shared.domain.user.VerificationToken;
 import net.easysmarthouse.shared.service.UserService;
@@ -21,6 +23,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
+
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
 
     @Override
     @Transactional
@@ -47,12 +52,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByEmail(String email) throws EmailExistsException {
-        final User user = userRepository.findByEmail(email);
-        if (user != null) {
-            throw new EmailExistsException();
-        }
-        return user;
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Override
@@ -94,5 +95,29 @@ public class UserServiceImpl implements UserService {
         verificationToken.updateToken(UUID.randomUUID().toString());
         verificationTokenRepository.update(verificationToken);
         return verificationToken;
+    }
+
+    @Override
+    @Transactional
+    public void createPasswordResetTokenForUser(final User user, final String token) {
+        final PasswordResetToken resetToken = new PasswordResetToken(token, user);
+        passwordResetTokenRepository.save(resetToken);
+    }
+
+    @Override
+    public PasswordResetToken findPasswordResetToken(String token, boolean userInclude) {
+        PasswordResetToken resetToken = passwordResetTokenRepository.getToken(token);
+
+        if (resetToken != null && userInclude) {
+            resetToken.setUser(
+                    userRepository.findById(resetToken.getUserId()));
+        }
+
+        return passwordResetTokenRepository.getToken(token);
+    }
+
+    @Override
+    public void changeUserPassword(User user) {
+        userRepository.changePassword(user);
     }
 }

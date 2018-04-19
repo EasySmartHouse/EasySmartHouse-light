@@ -1,5 +1,6 @@
 package net.easysmarthouse.event.listener;
 
+import net.easysmarthouse.mail.MailBuilder;
 import net.easysmarthouse.shared.domain.user.User;
 import net.easysmarthouse.shared.event.VerifyRegistrationEvent;
 import net.easysmarthouse.shared.service.UserService;
@@ -26,7 +27,7 @@ public class VerifyRegistrationListener implements ApplicationListener<VerifyReg
     private JavaMailSender mailSender;
 
     @Autowired
-    private Environment env;
+    private MailBuilder mailBuilder;
 
     @Override
     public void onApplicationEvent(VerifyRegistrationEvent event) {
@@ -44,16 +45,10 @@ public class VerifyRegistrationListener implements ApplicationListener<VerifyReg
     }
 
     private final SimpleMailMessage createEmailMessage(final VerifyRegistrationEvent event, final User user, final String token) {
-        final String recipientAddress = user.getEmail();
         final String subject = "Registration Confirmation";
         final String confirmationUrl = event.getAppUrl() + "/confirmRegistration?token=" + token;
         final String message = messages.getMessage("message.mail.registration.success", null, event.getLocale());
-        final SimpleMailMessage email = new SimpleMailMessage();
-        email.setTo(recipientAddress);
-        email.setSubject(subject);
-        email.setText(message + " \r\n" + confirmationUrl);
-        email.setFrom(env.getProperty("support.email"));
-        return email;
+        return mailBuilder.createMessage(subject, message + " \r\n" + confirmationUrl, user);
     }
 
 }

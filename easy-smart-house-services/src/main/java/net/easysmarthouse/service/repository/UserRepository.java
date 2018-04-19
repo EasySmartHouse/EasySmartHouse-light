@@ -14,4 +14,6 @@ public interface UserRepository {
 
     public User update(User user);
 
+    public User changePassword(User user);
+
 }

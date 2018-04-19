@@ -1,5 +1,6 @@
 package net.easysmarthouse.config;
 
+import net.easysmarthouse.web.security.Authorities;
 import net.easysmarthouse.web.security.SimpleAccessDeniedHandler;
 import net.easysmarthouse.web.security.RestBasicAuthenticationEntryPoint;
 import net.easysmarthouse.web.auth.StayLogoutSuccessHandler;
@@ -83,17 +84,22 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
                 .authorizeRequests()
-                .antMatchers("/user/register", "/user/login", "/user/confirmRegistration", "/logout", "/images/**").permitAll()
-                .anyRequest().fullyAuthenticated().and()
+                .antMatchers("/user/register", "/user/login", "/user/confirmRegistration", "/logout", "/images/**")
+                    .permitAll()
+                .antMatchers("/user/changePassword*", "/user/savePassword*")
+                    .hasAuthority(Authorities.CHANGE_PASSWORD)
+                .anyRequest()
+                    .fullyAuthenticated().and()
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
                 .authenticationEntryPoint(authenticationEntryPoint).and()
                 .logout()
-                .permitAll()
+                    .permitAll()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
                 .logoutSuccessHandler(new StayLogoutSuccessHandler()).and()
                 .httpBasic().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
-                .csrf().disable();
+                .csrf()
+                    .disable();
     }
 
 

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 
 @Repository
 public class PasswordResetTokenRepositoryImpl implements PasswordResetTokenRepository {
@@ -72,5 +73,12 @@ public class PasswordResetTokenRepositoryImpl implements PasswordResetTokenRepos
             logger.error("Couldn't update token", ex);
             return null;
         }
+    }
+
+    @Override
+    @Transactional
+    public void deleteExpiredSince(Date date) {
+        jdbcTemplate.update("DELETE FROM PASSWORD_RESET_TOKEN WHERE EXPIRY_DATE <= ?",
+                new Object[]{date});
     }
 }

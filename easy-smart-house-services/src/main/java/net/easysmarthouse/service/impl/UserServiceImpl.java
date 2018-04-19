@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -119,5 +120,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void changeUserPassword(User user) {
         userRepository.changePassword(user);
+    }
+
+    @Override
+    public void deleteExpiredTokens(Date date) {
+        verificationTokenRepository.deleteExpiredSince(date);
+        passwordResetTokenRepository.deleteExpiredSince(date);
     }
 }

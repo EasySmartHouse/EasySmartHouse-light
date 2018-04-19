@@ -5,6 +5,8 @@ import net.easysmarthouse.shared.domain.user.User;
 import net.easysmarthouse.shared.domain.user.VerificationToken;
 import net.easysmarthouse.shared.validation.EmailExistsException;
 
+import java.util.Date;
+
 public interface UserService {
 
     public User save(User user);
@@ -28,5 +30,7 @@ public interface UserService {
     public PasswordResetToken findPasswordResetToken(String token, boolean userInclude);
 
     public void changeUserPassword(User user);
+
+    public void deleteExpiredTokens(Date date);
 
 }

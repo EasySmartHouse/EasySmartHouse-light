@@ -12,4 +12,5 @@ def lookupForProjects(def root, def path) {
 }
 
 lookupForProjects(rootDir, '')
+include 'easy-smart-house-client'
 

@@ -40,3 +40,6 @@ logs/
 
 #dist
 dist/
+
+#swagger
+swagger/

@@ -33,4 +33,16 @@ public class DeviceController {
         return new ResponseEntity<>(entities, HttpStatus.OK);
     }
 
+    @CrossOrigin
+    @RequestMapping(value = "addresses", method = RequestMethod.GET)
+    public @ResponseBody
+    ResponseEntity<?> addresses() {
+        final Collection<String> addresses = deviceService.getAddresses();
+        if (CollectionUtils.isEmpty(addresses)) {
+            logger.warn(String.format("No devices found"));
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(addresses, HttpStatus.OK);
+    }
+
 }

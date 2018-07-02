@@ -8,4 +8,6 @@ public interface DeviceService {
 
     public Collection<DeviceEntity> searchDevices(String term);
 
+    public Collection<String> getAddresses();
+
 }

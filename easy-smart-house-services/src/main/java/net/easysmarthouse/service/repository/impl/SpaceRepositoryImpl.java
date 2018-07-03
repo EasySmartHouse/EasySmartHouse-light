@@ -76,4 +76,13 @@ public class SpaceRepositoryImpl implements SpaceRepository {
                         space.getName(), space.getImage()
                 });
     }
+
+    @Override
+    public Space findById(int spaceId) {
+        return jdbcTemplate.queryForObject("SELECT sp.ID, sp.NAME, img.FILE_NAME FROM SPACES sp " +
+                        "LEFT OUTER JOIN IMAGES img ON sp.IMAGE = img.ID " +
+                        "WHERE sp.ID=?",
+                new Object[]{spaceId},
+                new SpaceRowMapper());
+    }
 }

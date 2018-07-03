@@ -57,9 +57,9 @@ public class MockNetworkManager implements NetworkManager, DeviceObservable, Net
     }
 
     private void checkNetworkSession() throws NetworkException{
-//        if (!sessionStarts.get()) {
-//            throw new IllegalStateException("Session must be acquire first");
-//        }
+        if (!sessionStarts.get()) {
+            throw new IllegalStateException("Session must be acquire first");
+        }
     }
 
     @Override

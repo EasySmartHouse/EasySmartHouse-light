@@ -43,6 +43,7 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public Collection<String> getAddresses() {
         try {
+            networkManager.startSession();
             return networkManager.getDevices()
                     .stream()
                     .map(device -> device.getAddress())
@@ -50,6 +51,12 @@ public class DeviceServiceImpl implements DeviceService {
         } catch (NetworkException ex) {
             logger.error("Error while getting devices addresses");
             throw new RuntimeException(ex);
+        } finally {
+            try {
+                networkManager.endSession();
+            }catch(Exception ex){
+                logger.error("Fail to finalize session");
+            }
         }
     }
 }

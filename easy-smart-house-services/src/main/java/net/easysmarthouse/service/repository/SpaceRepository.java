@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface SpaceRepository {
 
+    public Space findById(int spaceId);
+
     public int save(Space space);
 
     public int update(Space space);
